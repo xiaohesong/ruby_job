@@ -6,6 +6,7 @@ require 'pry'
 require 'json'
 
 JOB_TITLE = 'ruby:job'
+JOB_URL = 'https://ruby-china.org/jobs'
 
 configure :production do
   uri = URI.parse(ENV["REDISGREEN_URL"])
@@ -21,16 +22,22 @@ configure :development do
 end
 
 get '/' do
-    @titles = {}
-    url = 'https://ruby-china.org/jobs'
-    page = Nokogiri::HTML(open(url))
-    list = page.search("div.title.media-heading a")
-    list.each_with_index do |item, i|
-      id ||= item.to_h["href"].split("/").last.to_i
-      value ||= item.to_h["title"]
-      # puts "这个id是#{id},value是#{value}, 序号是#{i}"
-      @titles[id] = value
-      # @titles << Hash[id]
-    end
-    erb :index
+  @titles = {}
+  page = Nokogiri::HTML(open(JOB_URL))
+  list = page.search("div.title.media-heading a")
+  list.each_with_index do |item, i|
+    id ||= item.to_h["href"].split("/").last.to_i
+    value ||= item.to_h["title"]
+    @titles[id] = value
+  end
+  erb :index
+end
+
+get '/jobs/:id' do
+  id = params[:id]
+  url = "https://ruby-china.org/topics/#{id}"
+  page = Nokogiri::HTML(open(url))
+  @title = page.at("div.media-body h1.media-heading")
+  @body = page.at("div.panel-body.markdown article")
+  erb :show
 end
