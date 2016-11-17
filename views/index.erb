@@ -1,0 +1,28 @@
+<div id="app-container" class="container" myapp="STORE_WECHAT_INFOS_EDIT">
+  <div class="app">
+     <div class="app-inner clearfix">
+      <div class="widget-list-filter">
+        <a href="/settings/store_staff/new" class="ui-btn ui-btn-success">添加管理员</a>
+      </div>
+         <table id="wechat_table" class="ui-table ui-table-list">
+          <thead>
+              <tr>
+                <th>
+                  公司
+                </th>
+              </tr>
+          </thead>
+          <tbody>
+              <% @titles.each do |key, value| %>
+                <tr>
+                  <td>
+                    <a href="https://ruby-china.org/topics/<%= key %>"><%= value %></a>
+                  </td>
+                </tr>
+              <% end %>
+          </tbody>
+        </table>
+      </div>
+  </div>
+
+</div>
