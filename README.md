@@ -10,3 +10,10 @@
 > shotgun was instead of ruby. Don't to restart server.
  
 ##### 4. localhost:9393
+
+
+
+Note: Index was the first page. you would to add page with it.likes:
+
+  
+##### localhost:9393/?page=n
