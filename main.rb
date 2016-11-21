@@ -6,7 +6,8 @@ require 'pry'
 require 'json'
 
 JOB_TITLE = 'ruby:job'
-JOB_URL = 'https://ruby-china.org/jobs'
+JOB_URL = 'https://ruby-china.org/jobs?page=1'
+TWO_PAGE_COUNT = 2
 
 configure :production do
   uri = URI.parse(ENV["REDISGREEN_URL"])
@@ -23,12 +24,16 @@ end
 
 get '/' do
   @titles = {}
-  page = Nokogiri::HTML(open(JOB_URL))
-  list = page.search("div.title.media-heading a")
-  list.each_with_index do |item, i|
-    id ||= item.to_h["href"].split("/").last.to_i
-    value ||= item.to_h["title"]
-    @titles[id] = value
+  size = (params[:page].to_i == 0 ? TWO_PAGE_COUNT : params[:page].to_i)
+  size.times.each do |i|
+    i = i + 1
+    page = Nokogiri::HTML(open("https://ruby-china.org/jobs?page=#{i}"))
+    list = page.search("div.title.media-heading a")
+    list.each_with_index do |item, i|
+      id ||= item.to_h["href"].split("/").last.to_i
+      value ||= item.to_h["title"]
+      @titles[id] = value
+    end
   end
   erb :index
 end
