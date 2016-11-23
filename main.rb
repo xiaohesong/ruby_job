@@ -23,6 +23,20 @@ configure :development do
 end
 
 get '/' do
+  redirect '/ruby-china/jobs'
+
+end
+
+get '/ruby-china/jobs/:id' do
+  id = params[:id]
+  url = "https://ruby-china.org/topics/#{id}"
+  page = Nokogiri::HTML(open(url))
+  @title = page.at("div.media-body h1.media-heading")
+  @body = page.at("div.panel-body.markdown article")
+  erb :'/ruby-china/show'
+end
+
+get '/ruby-china/jobs' do
   @titles = {}
   size = (params[:page].to_i == 0 ? TWO_PAGE_COUNT : params[:page].to_i)
   size.times.each do |i|
@@ -35,14 +49,5 @@ get '/' do
       @titles[id] = value
     end
   end
-  erb :index
-end
-
-get '/jobs/:id' do
-  id = params[:id]
-  url = "https://ruby-china.org/topics/#{id}"
-  page = Nokogiri::HTML(open(url))
-  @title = page.at("div.media-body h1.media-heading")
-  @body = page.at("div.panel-body.markdown article")
-  erb :show
+  erb :'ruby-china/index'
 end
