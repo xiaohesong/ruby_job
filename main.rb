@@ -51,3 +51,9 @@ get '/ruby-china/jobs' do
   end
   erb :'ruby-china/index'
 end
+
+get '/lagou/jobs' do
+  page = Nokogiri::HTML(open("https://www.lagou.com/jobs/list_Ruby?px=default&city=%E5%85%A8%E5%9B%BD#filterBox"))
+  list = page.search("ul.item_con_list li")
+  # binding.pry
+end
